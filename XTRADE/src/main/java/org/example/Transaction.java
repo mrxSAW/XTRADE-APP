@@ -1,26 +1,32 @@
 package org.example;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class Transaction {
 
 
    private String type;
+   private String asset;
    private  int quantity;
    private  double price;
-   private Date  localtime;
+   private LocalDateTime localtime;
 
 
-    public Transaction(String type, int quantity, double price, Date localtime) {
+    public Transaction(String type,String asset, int quantity, double price) {
         this.type = type;
+        this.asset = asset;
         this.quantity = quantity;
         this.price = price;
-        this.localtime = localtime;
+        this.localtime = LocalDateTime.now();
     }
 
 
     public String getType() {
         return type;
     }
+
+    public String getAsset() {  return asset; }
 
     public int getQuantity() {
         return quantity;
@@ -29,9 +35,13 @@ public class Transaction {
     public double getPrice() {
         return price;
     }
-
-    public Date getLocaltime() {
+    public LocalDateTime getLocaltime() {
         return localtime;
+    }
+
+    public  String getFormatedDate() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        return localtime.format(formatter);
     }
 
     public void setType(String type) {
@@ -46,9 +56,7 @@ public class Transaction {
         this.price = price;
     }
 
-    public void setLocaltime(Date localtime) {
-        this.localtime = localtime;
-    }
+
 
 
 

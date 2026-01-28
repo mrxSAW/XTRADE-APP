@@ -6,7 +6,7 @@ public class Stock extends Asset {
 
 
     public Stock(String companyName,String name,String code,double UnitPrice,int quantity) {
-        super(code,name,UnitPrice,quantity);
+        super(name,code,UnitPrice,quantity);
         this.companyName = companyName;
     }
 

@@ -2,6 +2,8 @@ package org.example;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+
+
 public class TradingPlatforme {
 
 
@@ -57,7 +59,7 @@ public static void afficherTrader(){
             System.out.println("========folio===========");
             System.out.println("stok   : " +trader.getPortfolio().getStok());
             System.out.println("BTC    :  "+trader.getPortfolio().getBTC());
-            System.out.println("restsolde"+trader.getPortfolio().getRestsolde());
+            System.out.println("restsolde : "+trader.getPortfolio().getRestsolde());
             System.out.println("SouldeTotal : "+trader.getPortfolio().getSouldeTotal());
             System.out.println("________________________________________________");
         }
@@ -94,6 +96,190 @@ public static void afficherTrader(){
        }
 
     }
+
+
+
+
+    public static void achat(Scanner scanner){
+        System.out.println("Asset desponible");
+        afficherAsset();
+        System.out.println("entrer le code de l'Asset a acheter  ");
+        String codesearch=scanner.nextLine();
+        if(codesearch.equals("BTC")){
+            Trader trader= getTraderList().getFirst();
+          CreptoCurrency  btc=getCreptoCurrencyList().getFirst();
+          Stock stok=getStockList().getFirst();
+            System.out.println("carrency : "+btc.getName());
+            System.out.println("code  : "+btc.getCode());
+            System.out.println("quantity   : "+btc.getQuantity());
+            System.out.println("prix de l'unité: " + btc.getUnitPrice());
+            System.out.println("entrer la quantity a acheter de : " + btc.getCode() );
+            int Qacheter=scanner.nextInt();
+            scanner.nextLine();
+            if(Qacheter<btc.getQuantity() ||Qacheter==btc.getQuantity() ){
+                double prixTotal= btc.getUnitPrice()*Qacheter;
+                if(prixTotal<=trader.getPortfolio().getRestsolde()){
+                   double restsolde=trader.getPortfolio().getRestsolde()-prixTotal;
+                    trader.getPortfolio().setRestsolde(restsolde);
+                    int soldBtc=trader.getPortfolio().getBTC();
+                    trader.getPortfolio().setBTC(soldBtc+Qacheter);
+                    int QexistantBtc=btc.getQuantity();
+                    btc.setQuantity(QexistantBtc-Qacheter);
+                    trader.getPortfolio().setSouldeTotal((btc.getUnitPrice()*trader.getPortfolio().getBTC())+(stok.getUnitPrice()*(trader.getPortfolio().getStok()))+trader.getPortfolio().getRestsolde());
+                    Transaction transaction=new Transaction(" achat "," BTC ",Qacheter,btc.getUnitPrice());
+                    getTransactionList().add(transaction);
+                    System.out.println("vous avez acheter avec succes  "+ Qacheter+ " BTC  "+ " votre solde restant est : "+ trader.getPortfolio().getRestsolde());
+                }else {
+                    System.out.println("votre solde est insufusant");
+                }
+
+            }else {
+                System.out.println("la quantity demander non disponible");
+            }
+        }
+
+
+
+        else if(codesearch.equals("GD")){
+            Trader trader= getTraderList().getFirst();
+            Stock  stock=getStockList().getFirst();
+            CreptoCurrency btc=getCreptoCurrencyList().getFirst();
+            System.out.println("stock : "+stock.getName());
+            System.out.println("code  : "+stock.getCode());
+            System.out.println("quantity   : "+ stock.getQuantity());
+            System.out.println("prix de l'unité  : " + stock.getUnitPrice());
+            System.out.println("entrer la quantity a acheter de : " + stock.getCode() );
+            int Qacheter=scanner.nextInt();
+            scanner.nextLine();
+            if(Qacheter<stock.getQuantity() ||Qacheter==stock.getQuantity() ){
+                double prixTotal= stock.getUnitPrice()*Qacheter;
+                if(prixTotal<=trader.getPortfolio().getRestsolde()){
+                    double restsolde=trader.getPortfolio().getRestsolde()-prixTotal;
+                    trader.getPortfolio().setRestsolde(restsolde);
+                    int soldStock=trader.getPortfolio().getStok();
+                    trader.getPortfolio().setStok(soldStock+Qacheter);
+                    int QexistantStock=stock.getQuantity();
+                    stock.setQuantity(QexistantStock-Qacheter);
+                    trader.getPortfolio().setSouldeTotal((btc.getUnitPrice()*trader.getPortfolio().getBTC())+(stock.getUnitPrice()*(trader.getPortfolio().getStok()))+trader.getPortfolio().getRestsolde());
+                    Transaction transaction=new Transaction("achat ","GD ",Qacheter,btc.getUnitPrice());
+                    getTransactionList().add(transaction);
+                    System.out.println("vous avez acheter avec succes  "+ Qacheter+ "  DG  "+ "votre solde restant est : "+ trader.getPortfolio().getRestsolde());
+                }else {
+                    System.out.println("votre solde est insufusant");
+                }
+
+            }else {
+                System.out.println("la quantity demander non disponible");
+            }
+        }else {
+            System.out.println("choix d'Asset invalide");
+        }
+
+    }
+
+
+
+
+
+
+
+
+
+    public static void vent(Scanner scanner){
+        System.out.println("Asset que vous posseder");
+        System.out.println("stock : "+getTraderList().getFirst().getPortfolio().getStok() +" GD");
+        System.out.println("BTC   :  "+getTraderList().getFirst().getPortfolio().getBTC() + " BTC");
+        System.out.println("entrer le code de l'Asset a vendre  ");
+        String codesearch=scanner.nextLine();
+        if(codesearch.equals("BTC")){
+            Trader trader= getTraderList().getFirst();
+            CreptoCurrency  btc=getCreptoCurrencyList().getFirst();
+            Stock  stock=getStockList().getFirst();
+            System.out.println("carrency : "+btc.getName());
+            System.out.println("code  : "+btc.getCode());
+            System.out.println("prix de l'unité: " + btc.getUnitPrice());
+            System.out.println("entrer la quantity a vender de : " + btc.getCode() );
+            int Qavender =scanner.nextInt();
+            scanner.nextLine();
+            if(Qavender <trader.getPortfolio().getBTC() || Qavender ==trader.getPortfolio().getBTC() ){
+                double prixTotal= btc.getUnitPrice()* Qavender;
+
+                    double restsolde=trader.getPortfolio().getRestsolde()+prixTotal;
+                    trader.getPortfolio().setRestsolde(restsolde);
+                    int soldBtc=trader.getPortfolio().getBTC();
+                    trader.getPortfolio().setBTC(soldBtc - Qavender);
+                    int QexistantBtc=btc.getQuantity();
+                    btc.setQuantity(QexistantBtc + Qavender);
+                trader.getPortfolio().setSouldeTotal((btc.getUnitPrice()*trader.getPortfolio().getBTC())+(stock.getUnitPrice()*(trader.getPortfolio().getStok()))+trader.getPortfolio().getRestsolde());
+
+                Transaction transaction=new Transaction("vent "," TBC ",Qavender,btc.getUnitPrice());
+                getTransactionList().add(transaction);
+                    System.out.println("vous avez vendu avec succes  "+ Qavender + " BTC  "+ " votre solde restant est : "+ trader.getPortfolio().getRestsolde());
+
+
+            }else {
+                System.out.println("la quantity selectionner  non disponible sur votre portfieul");
+            }
+        }
+
+
+
+        else if(codesearch.equals("GD")){
+            Trader trader= getTraderList().getFirst();
+            Stock  stock=getStockList().getFirst();
+            CreptoCurrency btc=getCreptoCurrencyList().getFirst();
+            System.out.println("stock : "+stock.getName());
+            System.out.println("code  : "+stock.getCode());
+            System.out.println("prix de l'unité: " + stock.getUnitPrice());
+            System.out.println("entrer la quantity a vender de : " + stock.getCode() );
+            int Qavender =scanner.nextInt();
+            scanner.nextLine();
+            if(Qavender <trader.getPortfolio().getStok() || Qavender ==trader.getPortfolio().getStok() ){
+                double prixTotal= stock.getUnitPrice()* Qavender;
+
+                    double soldeEexistant=trader.getPortfolio().getRestsolde();
+                    trader.getPortfolio().setRestsolde(soldeEexistant+prixTotal);
+                    int soldStock=trader.getPortfolio().getStok();
+                    trader.getPortfolio().setStok(soldStock - Qavender);
+                    int QexistantStock=stock.getQuantity();
+                    stock.setQuantity(QexistantStock + Qavender);
+                trader.getPortfolio().setSouldeTotal((btc.getUnitPrice()*trader.getPortfolio().getBTC())+(stock.getUnitPrice()*(trader.getPortfolio().getStok()))+trader.getPortfolio().getRestsolde());
+                Transaction transaction=new Transaction("vent "," GD ",Qavender,btc.getUnitPrice());
+                getTransactionList().add(transaction);
+
+                    System.out.println("vous avez vendu avec succes  "+ Qavender + "  DG  "+ "votre solde restant est : "+ trader.getPortfolio().getRestsolde());
+
+
+            }else {
+                System.out.println("la quantity demander non disponible sur votre portfieul");
+            }
+        }else {
+            System.out.println("choix d'Asset invalide");
+        }
+
+    }
+
+
+
+
+
+   public static void afficherTransaction(){
+        if (TransactionList.isEmpty()){
+            System.out.println("la liste des transactions est vide");
+        }
+
+       System.out.println("============ la list des transaction=============");
+       System.out.println("  type   |  Asset   | quantity |     price     | date ");
+        for (int i=0;i< TransactionList.size();i++){
+            Transaction trans=TransactionList.get(i);
+            System.out.println(trans.getType() +"     "+trans.getAsset()+"         "+trans.getQuantity()+"           "+trans.getPrice()+"            "+trans.getFormatedDate());
+
+
+        }
+
+
+   }
+
 
 
 
