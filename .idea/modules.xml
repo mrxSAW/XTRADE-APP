@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/XTRADE.iml" filepath="$PROJECT_DIR$/.idea/XTRADE.iml" />
+      <module fileurl="file://$PROJECT_DIR$/XTRADE/XTRADE.iml" filepath="$PROJECT_DIR$/XTRADE/XTRADE.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Xtrad.iml" filepath="$PROJECT_DIR$/.idea/Xtrad.iml" />
     </modules>
   </component>
 </project>

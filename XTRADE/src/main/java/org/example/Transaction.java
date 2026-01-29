@@ -1,6 +1,7 @@
 package org.example;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Transaction {
@@ -11,7 +12,7 @@ public class Transaction {
    private  int quantity;
    private  double price;
    private LocalDateTime localtime;
-
+   private static ArrayList<Transaction> TransactionList=new ArrayList<>();
 
     public Transaction(String type,String asset, int quantity, double price) {
         this.type = type;
@@ -21,6 +22,10 @@ public class Transaction {
         this.localtime = LocalDateTime.now();
     }
 
+
+    public static ArrayList<Transaction> getTransactionList() {
+        return TransactionList;
+    }
 
     public String getType() {
         return type;

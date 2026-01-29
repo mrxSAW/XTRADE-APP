@@ -1,4 +1,8 @@
 package org.example;
+import java.io.FileWriter;
+import java.text.DecimalFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -161,7 +165,7 @@ public static void afficherTrader(){
                     int QexistantStock=stock.getQuantity();
                     stock.setQuantity(QexistantStock-Qacheter);
                     trader.getPortfolio().setSouldeTotal((btc.getUnitPrice()*trader.getPortfolio().getBTC())+(stock.getUnitPrice()*(trader.getPortfolio().getStok()))+trader.getPortfolio().getRestsolde());
-                    Transaction transaction=new Transaction("achat ","GD ",Qacheter,btc.getUnitPrice());
+                    Transaction transaction=new Transaction("achat ","GD ",Qacheter,stock.getUnitPrice());
                     getTransactionList().add(transaction);
                     System.out.println("vous avez acheter avec succes  "+ Qacheter+ "  DG  "+ "votre solde restant est : "+ trader.getPortfolio().getRestsolde());
                 }else {
@@ -244,7 +248,7 @@ public static void afficherTrader(){
                     int QexistantStock=stock.getQuantity();
                     stock.setQuantity(QexistantStock + Qavender);
                 trader.getPortfolio().setSouldeTotal((btc.getUnitPrice()*trader.getPortfolio().getBTC())+(stock.getUnitPrice()*(trader.getPortfolio().getStok()))+trader.getPortfolio().getRestsolde());
-                Transaction transaction=new Transaction("vent "," GD ",Qavender,btc.getUnitPrice());
+                Transaction transaction=new Transaction("vent "," GD ",Qavender,stock.getUnitPrice());
                 getTransactionList().add(transaction);
 
                     System.out.println("vous avez vendu avec succes  "+ Qavender + "  DG  "+ "votre solde restant est : "+ trader.getPortfolio().getRestsolde());
@@ -276,12 +280,108 @@ public static void afficherTrader(){
 
 
         }
-
-
    }
 
 
 
+
+
+
+     public static void exporterTransaction(){
+        if (TransactionList.isEmpty()){
+            System.out.println("la liste des transactions est vide");
+            return;
+        }
+
+        String date= java.time.LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy_HH-mm-ss"));
+        String nomFichier ="C:\\Users\\arkka\\Downloads " + date + ".csv";
+
+        final String SEPARATOR = ";";
+         DecimalFormat df = new DecimalFormat("#0.00");
+         df.setDecimalSeparatorAlwaysShown(true);
+
+         try (FileWriter writer = new FileWriter(nomFichier)){
+             // type   |  Asset   | quantity |     price     | date
+             writer.append(" type " + SEPARATOR + "Asset" + SEPARATOR +
+                            "quantity"+SEPARATOR +" price " + SEPARATOR +
+                            " totale price" + SEPARATOR + "date \n");
+
+           int totalTransaction=0;
+           for (Transaction transaction:TransactionList){
+             String line=String.join(SEPARATOR, transaction.getType(),transaction.getAsset(),
+                                      String.valueOf(transaction.getQuantity()),
+                                       df.format(transaction.getPrice()),
+                                        df.format(transaction.getPrice()*transaction.getQuantity()),
+                                       transaction.getFormatedDate())  + "\n";
+
+             writer.append(line);
+
+
+             totalTransaction++;
+
+                                                }
+
+
+            writer.append("Total Transactions: " + totalTransaction + "\n");
+
+             System.out.println("exporter transaction successful");
+             System.out.println("fichier cree" + nomFichier);
+             System.out.println("transaction exporter " + totalTransaction);
+         }catch (Exception e) {
+             System.err.println("Erreur lors de l'export: " + e.getMessage());
+             e.printStackTrace();
+         }
+     }
+
+
+
+
+
+
+
+    public static  void changerPriceAsset(Scanner scanner){
+        CreptoCurrency BTC=getCreptoCurrencyList().getFirst();
+        Stock stock=getStockList().getFirst();
+        afficherAsset();
+        System.out.println("entrer le code de Asset voulu pour changer le prix : ");
+        String codeAsset=scanner.nextLine();
+
+        if(codeAsset.equals(BTC.getCode())){
+            System.out.println("code Asset :"+BTC.getCode());
+            System.out.println("asset price :"+BTC.getUnitPrice());
+            System.out.println("entrer la nouvelle valeur du price :");
+            double NewPrice=scanner.nextDouble();
+            scanner.nextLine();
+            if (NewPrice>0){
+                BTC.setUnitPrice(NewPrice);
+                System.out.println("price modifier avec succees!  nouveau BTC price : " + BTC.getUnitPrice());
+            }else {
+                System.out.println("pas de pix negatif ");
+            }
+        }
+
+         else if(codeAsset.equals(stock.getCode())){
+            System.out.println("code Asset :"+stock.getCode());
+            System.out.println("asset price :"+stock.getUnitPrice());
+            System.out.println("entrer la nouvelle valeur du price :");
+            double NewPrice=scanner.nextDouble();
+            scanner.nextLine();
+            if (NewPrice>0){
+                stock.setUnitPrice(NewPrice);
+                System.out.println("price modifier avec succees!  nouveau stock price : " + stock.getUnitPrice());
+            }else {
+                System.out.println("pas de pix negatif ");
+            }
+        }
+         else {
+            System.out.println("code entrer invalide");
+
+        }
+
+
+
+
+    }
 
 
 
