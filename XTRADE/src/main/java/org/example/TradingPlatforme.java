@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 
@@ -32,13 +33,55 @@ public class TradingPlatforme {
     }
 
     public static Trader addTrader(Scanner scanner){
-       System.out.println("Enter Trader Name:");
-       String name=scanner.nextLine();
+        try {
+            String name;
+        do {
+            System.out.println("Enter Trader Name:");
+            name = scanner.nextLine();
+            if (name == null || name.trim().isEmpty()) {
+                System.out.println("  le nom ne pas etre vide ");
+            }
+            else {
+                break;
+            }
+        }while (true);
        System.out.println("Enter Trader ID:");
-       String ID=scanner.nextLine();
+       String ID;
+
+       do {
+           ID = scanner.nextLine();
+           if (ID == null || ID.trim().isEmpty()) {
+               System.out.println("  l'ID ne pas etre vide ");
+           }else  {
+               break;
+           }
+       }while (true);
+
+       for(Trader trader:TraderList){
+           if(ID.equals(trader.getID())){
+               throw new IllegalArgumentException("un trader avec cett Id existe deja ");
+           }
+       }
+
        System.out.println("Enter SoldeInitial:");
-       double SoldeInitial=scanner.nextDouble();
-       scanner.nextLine();
+        double SoldeInitial;
+       do {
+           try {
+
+            SoldeInitial=scanner.nextDouble();
+           scanner.nextLine();
+           if (SoldeInitial>0) {
+              break;
+           }else {
+               System.out.println("entrer un double supperrieur de 0");
+           }
+
+           }catch (InputMismatchException e){
+               System.err .println("erreur entrer un nombre valide");
+               scanner.nextLine();
+           }
+       }while (true) ;
+
 
        Trader trader= new Trader(name,ID,SoldeInitial);
        TraderList.add(trader);
@@ -46,6 +89,13 @@ public class TradingPlatforme {
        System.out.println("trader ajouter avec succes  bienvenue "+trader.getName());
 
        return trader;
+        }catch (IllegalArgumentException e){
+            System.err.println("erreur de validation:"+e.getMessage());
+            return null;
+        }catch (Exception e){
+            System.err.println("erreur innattendu :"+e.getMessage());
+            return null;
+        }
    }
 
 
@@ -108,7 +158,16 @@ public static void afficherTrader(){
         System.out.println("Asset desponible");
         afficherAsset();
         System.out.println("entrer le code de l'Asset a acheter  ");
-        String codesearch=scanner.nextLine();
+        String codesearch;
+        do {
+            codesearch=scanner.nextLine();
+            if(scanner.hasNextLine()){
+                break;
+            }else {
+                System.out.println("le code ne doit pas etre vide ");
+            }
+        }while (true);
+
         if(codesearch.equals("BTC")){
             Trader trader= getTraderList().getFirst();
           CreptoCurrency  btc=getCreptoCurrencyList().getFirst();
@@ -118,8 +177,19 @@ public static void afficherTrader(){
             System.out.println("quantity   : "+btc.getQuantity());
             System.out.println("prix de l'unité: " + btc.getUnitPrice());
             System.out.println("entrer la quantity a acheter de : " + btc.getCode() );
-            int Qacheter=scanner.nextInt();
-            scanner.nextLine();
+            int Qacheter;
+           do {
+
+               Qacheter = scanner.nextInt();
+               scanner.nextLine();
+                if(Qacheter>0){
+
+                    break;
+                }else {
+                    System.out.println("la quantity ne peut pas etre vide ou null");
+                }
+
+            }while (true);
             if(Qacheter<btc.getQuantity() ||Qacheter==btc.getQuantity() ){
                 double prixTotal= btc.getUnitPrice()*Qacheter;
                 if(prixTotal<=trader.getPortfolio().getRestsolde()){
@@ -153,8 +223,16 @@ public static void afficherTrader(){
             System.out.println("quantity   : "+ stock.getQuantity());
             System.out.println("prix de l'unité  : " + stock.getUnitPrice());
             System.out.println("entrer la quantity a acheter de : " + stock.getCode() );
-            int Qacheter=scanner.nextInt();
-            scanner.nextLine();
+            int Qacheter;
+            do {
+                Qacheter = scanner.nextInt();
+                scanner.nextLine();
+                if(Qacheter>0){
+                    break;
+                }else {
+                    System.out.println("la quantity ne peut pas etre vide ou null");
+                }
+            }while (true);
             if(Qacheter<stock.getQuantity() ||Qacheter==stock.getQuantity() ){
                 double prixTotal= stock.getUnitPrice()*Qacheter;
                 if(prixTotal<=trader.getPortfolio().getRestsolde()){
@@ -194,7 +272,16 @@ public static void afficherTrader(){
         System.out.println("stock : "+getTraderList().getFirst().getPortfolio().getStok() +" GD");
         System.out.println("BTC   :  "+getTraderList().getFirst().getPortfolio().getBTC() + " BTC");
         System.out.println("entrer le code de l'Asset a vendre  ");
-        String codesearch=scanner.nextLine();
+        String codesearch;
+        do {
+            codesearch = scanner.nextLine();
+            if (scanner.hasNextLine()) {
+                break;
+            }else {
+                System.out.println("la code ne doit pas etre vide ");
+            }
+
+        }while (true);
         if(codesearch.equals("BTC")){
             Trader trader= getTraderList().getFirst();
             CreptoCurrency  btc=getCreptoCurrencyList().getFirst();
@@ -203,8 +290,16 @@ public static void afficherTrader(){
             System.out.println("code  : "+btc.getCode());
             System.out.println("prix de l'unité: " + btc.getUnitPrice());
             System.out.println("entrer la quantity a vender de : " + btc.getCode() );
-            int Qavender =scanner.nextInt();
-            scanner.nextLine();
+            int Qavender ;
+            do {
+                Qavender = scanner.nextInt();
+                scanner.nextLine();
+                if (Qavender>0){
+                    break;
+                }else {
+                    System.out.println("la quantity ne peut pas etre vide ");
+                }
+            }while (true);
             if(Qavender <trader.getPortfolio().getBTC() || Qavender ==trader.getPortfolio().getBTC() ){
                 double prixTotal= btc.getUnitPrice()* Qavender;
 
@@ -236,8 +331,17 @@ public static void afficherTrader(){
             System.out.println("code  : "+stock.getCode());
             System.out.println("prix de l'unité: " + stock.getUnitPrice());
             System.out.println("entrer la quantity a vender de : " + stock.getCode() );
-            int Qavender =scanner.nextInt();
-            scanner.nextLine();
+            int Qavender;
+
+            do {
+                Qavender = scanner.nextInt();
+                scanner.nextLine();
+                if (Qavender>0){
+                    break;
+                }else {
+                    System.out.println("la quantity ne peut pas etre vide ");
+                }
+            }while (true);
             if(Qavender <trader.getPortfolio().getStok() || Qavender ==trader.getPortfolio().getStok() ){
                 double prixTotal= stock.getUnitPrice()* Qavender;
 
@@ -344,14 +448,33 @@ public static void afficherTrader(){
         Stock stock=getStockList().getFirst();
         afficherAsset();
         System.out.println("entrer le code de Asset voulu pour changer le prix : ");
-        String codeAsset=scanner.nextLine();
+        String codeAsset;
 
+        do {
+            codeAsset = scanner.nextLine();
+            if(scanner.hasNextLine()) {
+                break;
+            }else {
+                System.out.println("code asset ne peut pas etre vide");
+            }
+        }while (true);
         if(codeAsset.equals(BTC.getCode())){
             System.out.println("code Asset :"+BTC.getCode());
             System.out.println("asset price :"+BTC.getUnitPrice());
             System.out.println("entrer la nouvelle valeur du price :");
-            double NewPrice=scanner.nextDouble();
-            scanner.nextLine();
+
+            double NewPrice;
+
+           do {
+                NewPrice = scanner.nextDouble();
+                scanner.nextLine();
+                if (NewPrice>0){
+                    break;
+                }else {
+                    System.out.println("price ne pas etre null ou negatif");
+                }
+           }while (true);
+
             if (NewPrice>0){
                 BTC.setUnitPrice(NewPrice);
                 System.out.println("price modifier avec succees!  nouveau BTC price : " + BTC.getUnitPrice());
@@ -364,8 +487,17 @@ public static void afficherTrader(){
             System.out.println("code Asset :"+stock.getCode());
             System.out.println("asset price :"+stock.getUnitPrice());
             System.out.println("entrer la nouvelle valeur du price :");
-            double NewPrice=scanner.nextDouble();
-            scanner.nextLine();
+            double NewPrice;
+
+            do {
+                NewPrice = scanner.nextDouble();
+                scanner.nextLine();
+                if (NewPrice>0){
+                    break;
+                }else {
+                    System.out.println("price ne pas etre null ou negatif");
+                }
+            }while (true);
             if (NewPrice>0){
                 stock.setUnitPrice(NewPrice);
                 System.out.println("price modifier avec succees!  nouveau stock price : " + stock.getUnitPrice());

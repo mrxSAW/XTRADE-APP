@@ -19,39 +19,36 @@ public class Main {
                                  " \n 4:acheter asset \n 5:vender Asset  \n 6:afficher les transaction  " +" \n 7:changer Asset price " +
                                  "\n E:exporter les transaction en csv ");
 
+
+
             choix = scanner.nextLine();
             if (choix.equals("1")) {
                 TradingPlatforme.addTrader(scanner);
-            }
-            else if (choix.equals("2")) {
+            } else if (choix.equals("2")) {
                 TradingPlatforme.afficherTrader();
-            }
-            else if(choix.equals("3")) {
+            } else if (choix.equals("3")) {
                 TradingPlatforme.afficherAsset();
-            }
-            else if(choix.equals("4")) {
+            } else if (choix.equals("4")) {
                 TradingPlatforme.achat(scanner);
-            }
-            else if(choix.equals("5")) {
+            } else if (choix.equals("5")) {
                 TradingPlatforme.vent(scanner);
-            }
-            else if(choix.equals("6")) {
+            } else if (choix.equals("6")) {
                 TradingPlatforme.afficherTransaction();
-            }
-            else if (choix.equals("7")) {
+            } else if (choix.equals("7")) {
                 TradingPlatforme.changerPriceAsset(scanner);
-            }
-            else if (choix.equals("E")) {
+            } else if (choix.equals("E")) {
                 TradingPlatforme.exporterTransaction();
-            }
-
-
-            else {
+            } else {
                 System.out.println("choix invalide");
             }
 
-        Trader trader=TradingPlatforme.getTraderList().getFirst();
-        trader.getPortfolio().setSouldeTotal((BTC.getUnitPrice()*trader.getPortfolio().getBTC())+(stock.getUnitPrice()*(trader.getPortfolio().getStok()))+trader.getPortfolio().getRestsolde());
+
+        try {
+            Trader trader=TradingPlatforme.getTraderList().getFirst();
+            trader.getPortfolio().setSouldeTotal((BTC.getUnitPrice()*trader.getPortfolio().getBTC())+(stock.getUnitPrice()*(trader.getPortfolio().getStok()))+trader.getPortfolio().getRestsolde());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
 
     }while (!choix.equalsIgnoreCase("Q"));
