@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.Map.*;
 
 
 public class TradingPlatforme {
@@ -209,7 +210,7 @@ public static void afficherTrader(){
                         int QexistantBtc = btc.getQuantity();
                         btc.setQuantity(QexistantBtc - Qacheter);
                         traderfind.getPortfolio().setSouldeTotal((btc.getUnitPrice() * traderfind.getPortfolio().getBTC()) + (stok.getUnitPrice() * (traderfind.getPortfolio().getStok())) + traderfind.getPortfolio().getRestsolde());
-                        Transaction transaction = new Transaction(" achat ",traderfind.getID()," BTC ", Qacheter, btc.getUnitPrice());
+                        Transaction transaction = new Transaction("achat",traderfind.getID(),"BTC", Qacheter, btc.getUnitPrice());
                         getTransactionList().add(transaction);
 
                         System.out.println("vous avez acheter avec succes  " + Qacheter + " BTC  " + " votre solde restant est : " + traderfind.getPortfolio().getRestsolde());
@@ -266,7 +267,7 @@ public static void afficherTrader(){
                     int QexistantStock=stock.getQuantity();
                     stock.setQuantity(QexistantStock-Qacheter);
                     traderfind.getPortfolio().setSouldeTotal((btc.getUnitPrice()*traderfind.getPortfolio().getBTC())+(stock.getUnitPrice()*(traderfind.getPortfolio().getStok()))+traderfind.getPortfolio().getRestsolde());
-                    Transaction transaction=new Transaction("achat ",traderfind.getID(),"GD ",Qacheter,stock.getUnitPrice());
+                    Transaction transaction=new Transaction("achat",traderfind.getID(),"GD",Qacheter,stock.getUnitPrice());
                     getTransactionList().add(transaction);
 
                     System.out.println("vous avez acheter avec succes  "+ Qacheter+ "  DG  "+ "votre solde restant est : "+ traderfind.getPortfolio().getRestsolde());
@@ -341,7 +342,7 @@ public static void afficherTrader(){
                     btc.setQuantity(QexistantBtc + Qavender);
                 traderfind.getPortfolio().setSouldeTotal((btc.getUnitPrice()*traderfind.getPortfolio().getBTC())+(stock.getUnitPrice()*(traderfind.getPortfolio().getStok()))+traderfind.getPortfolio().getRestsolde());
 
-                Transaction transaction=new Transaction("vent ",traderfind.getID()," TBC ",Qavender,btc.getUnitPrice());
+                Transaction transaction=new Transaction("vent",traderfind.getID(),"BTC",Qavender,btc.getUnitPrice());
                 getTransactionList().add(transaction);
                     System.out.println("vous avez vendu avec succes  "+ Qavender + " BTC  "+ " votre solde restant est : "+ traderfind.getPortfolio().getRestsolde());
 
@@ -392,7 +393,7 @@ public static void afficherTrader(){
                     int QexistantStock=stock.getQuantity();
                     stock.setQuantity(QexistantStock + Qavender);
                 traderfind.getPortfolio().setSouldeTotal((btc.getUnitPrice()*traderfind.getPortfolio().getBTC())+(stock.getUnitPrice()*(traderfind.getPortfolio().getStok()))+traderfind.getPortfolio().getRestsolde());
-                Transaction transaction=new Transaction("vent ",traderfind.getID()," GD ",Qavender,stock.getUnitPrice());
+                Transaction transaction=new Transaction("vent",traderfind.getID(),"GD",Qavender,stock.getUnitPrice());
                 getTransactionList().add(transaction);
 
                     System.out.println("vous avez vendu avec succes  "+ Qavender + "  DG  "+ "votre solde restant est : "+ traderfind.getPortfolio().getRestsolde());
@@ -552,13 +553,42 @@ public static void afficherTrader(){
 
         }
 
+    }
 
+
+
+
+
+    //+++++++++++++++++++++++++Analyse des transactions +++++++++++++++++++++++++++++++++++++
+
+    public static void  analyseDesTransactions(Scanner scanner){
+        System.out.println("\n =======analyse Des Transactions===========");
+        String choix;
+        System.out.println("entrer votre choix \n 1:pour Afficher toutes les transactions d’un trader donné" +
+                                     "\n 2:trierTrensaction  \n 3: trier Transaction Par Date  \n 4:trier Transaction Par Montant " +
+                                      "\n 5:Volume Totale Echange Par Actif  \n 6:Montant Total Achat  \n 7:MontantTotalVent");
+        choix = scanner.nextLine();
+        if(choix.equals("1")){
+            TradingPlatforme.afficherTransactionsTrader(scanner);
+        }else if (choix.equals("2")){
+            TradingPlatforme.trierTrensaction(scanner);
+        }else if (choix.equals("3")){
+            TradingPlatforme.trierTranParDate();
+        }else if (choix.equals("4")){
+            TradingPlatforme.trierTranParMontant();
+        }else if(choix.equals("5")){
+            TradingPlatforme.VolumeTotalEchangeParActif();
+        }else if (choix.equals("6")){
+            TradingPlatforme.MontantTotalAchat();
+        }else if (choix.equals("7")){
+            TradingPlatforme.MontantTotalVent();
+        }
 
 
     }
 
 
-
+//============================================================================
     public static void afficherTransactionsTrader(Scanner scanner) {
         System.out.println("Entrer l'ID du trader : ");
         String id = scanner.nextLine().trim();
@@ -583,7 +613,7 @@ public static void afficherTrader(){
         }
     }
 
-
+//===============================================================================
     public static void trierTrensaction(Scanner scanner){
            String choix;
         do {
@@ -661,9 +691,7 @@ public static void afficherTrader(){
     }
 
 
-
-
-
+//===================================================================
 
 
     public static void trierTranParDate (){
@@ -671,10 +699,13 @@ public static void afficherTrader(){
                 getTransactionList().stream()
                         .sorted((t1, t2) -> t1.getFormatedDate().compareTo(t2.getFormatedDate()))
                         .toList();
-
-
+                System.out.println("================sorted by date ================");
+        sortedByDate.forEach(t-> {
+            System.out.println("Type : " +t.getType()+ " ID :" +t.getID() + " Asset:"+t.getQuantity()+t.getAsset() +" Price unite  : "+t.getPrice()  +" date :"+ t.getFormatedDate());
+        });
     }
 
+    //===================================================================
     public static void trierTranParMontant (){
 
         List<Transaction> sortedByMontant =
@@ -682,115 +713,212 @@ public static void afficherTrader(){
                         .sorted((t1, t2) -> Double.compare((t1.getPrice()* t1.getQuantity()), (t2.getQuantity()* t2.getPrice())))
                         .toList();
 
+        sortedByMontant.forEach(t-> {
+            System.out.println("Type : " +t.getType()+ " ID :" +t.getID() + " Asset:"+t.getQuantity()+t.getAsset() +" Price unite  : "+t.getPrice()  +" date :"+ t.getFormatedDate());
+        });
     }
 
-
+//=========================================================
 
     public static void VolumeTotalEchangeParActif(){
-        Map<Asset, Double> volumeParActif =
+        Map<String, Double> volumeParActif =
                 getTransactionList().stream()
                         .collect(Collectors.groupingBy(
                                 t -> t.getAsset(),
                                 Collectors.summingDouble(t -> t.getQuantity())
                         ));
-
+        System.out.println("volume d'asset echanger ");
+        volumeParActif.forEach((k,v)->{
+            System.out.println(k + " - " + v.toString());
+                                                        });
     }
 
-
+//===========================================================
     public static void MontantTotalAchat(){
         double totalAchats =
                 getTransactionList().stream()
-                        .filter(t -> t.getType().equals("ACHAT"))
+                        .filter(t -> t.getType().equals("achat"))
                         .mapToDouble(t -> (t.getQuantity() * t.getPrice()))
                         .sum();
 
-
+        System.out.println("montant total d'achat");
+        System.out.println(totalAchats);
     }
 
-
+//===========================================================
 
     public static void MontantTotalVent(){
         double totalVentes =
                 getTransactionList().stream()
-                        .filter(t -> t.getType().equals("VENTE"))
+                        .filter(t -> t.getType().equals("vent"))
                         .mapToDouble(t -> (t.getQuantity() * t.getPrice()))
                         .sum();
 
+        System.out.println("montant total de vent ");
+        System.out.println(totalVentes);
     }
 
 
+
+    //+++++++++++++++++++++++++++Analyse de performance par trader+++++++++++
+
+    public static void AnalysePerformanceTrader(Scanner scanner) {
+        String choix;
+        System.out.println("entrer votre choix \n 1:pour olume Total Echange Par Trader  \n 2:Nombre Total Ordres Passer  \n 3:Classement des Tradre Par Volume Top 3");
+
+        choix = scanner.nextLine();
+        if(choix.equals("1")){
+           TradingPlatforme.VolumeTotalEchangeParTrader();
+        }
+        else if(choix.equals("2")){
+            TradingPlatforme.NombreTotalOrdresPasse();
+        }
+        else if (choix.equals("3")){
+            TradingPlatforme.ClassementTraderParVolumeTopN();
+        }
+    }
+
+
+    //============================================================
     public static void  VolumeTotalEchangeParTrader(){
-        Map<Trader, Double> volumeParTrader =
+        Map<String, Double> volumeParTrader =
                 getTransactionList().stream()
                         .collect(Collectors.groupingBy(
                                 t -> t.getID(),
-                                Collectors.summingDouble(t -> t.getQuantity())
+                                Collectors.summingDouble(t -> (t.getQuantity()* t.getPrice()))
                         ));
+    volumeParTrader.forEach( (k,v)->{
+        System.out.println("trader : "+k + " - " + v.toString());
+    });
     }
 
-
+//===========================================================
 
     public static void  NombreTotalOrdresPasse(){
 
         long nombreTotalOrdres = getTransactionList().stream().count();
-
+        System.out.println("nombre total d'order passer est"+nombreTotalOrdres);
     }
 
+//============================================================
 
-
-    public static void ClassementTraderParVolumeTopN(){
-
+    public static void ClassementTraderParVolumeTopN() {
         int N = 3;
 
-        List<Map.Entry<Trader, Double>> topTraders =
+        Map<String, Double> volumeParTrader = TradingPlatforme.getTransactionList().stream()
+                                              .collect(Collectors.groupingBy(t -> t.getID(),
+                                Collectors.summingDouble(t -> t.getQuantity())
+                        ));
+
+
+        List<Map.Entry<String, Double>> topTraders =
                 volumeParTrader.entrySet().stream()
                         .sorted((e1, e2) -> Double.compare(e2.getValue(), e1.getValue()))
                         .limit(N)
                         .toList();
+
+
+        System.out.println(" Top " + N + " Traders par volume :");
+        topTraders.forEach(e ->
+                System.out.println("Trader id : "+ e.getKey() + " → Volume : " + e.getValue())
+        );
+    }
+
+//=========================================================
+
+
+
+
+    //+++++++++++++++++++++++++Analyse globale du marché simulé+++++++++++++++++++
+   public static void AnalyseGlobaleMarcheSimule(Scanner scanner) {
+        String choix;
+       System.out.println("entrer votre choix \n 1:Volume Total Echange Par Instrument Financier   " +
+               "\n 2:Instrument Plus Echange   \n 3:Montant Total BUY        \n 4:Montant Total SELL");
+       choix = scanner.nextLine();
+       if(choix.equalsIgnoreCase("1")){
+           TradingPlatforme.VolumeTotalEchangeParInstrumentFinancier();
+       }else if(choix.equalsIgnoreCase("2")){
+           TradingPlatforme.InstrumentPlusEchange();
+       }else if(choix.equalsIgnoreCase("3")){
+           TradingPlatforme.MontantTotalBUY();
+       }else if(choix.equalsIgnoreCase("4")){
+           TradingPlatforme.MontantTotalSELL();
+       }
+
+
+
+   }
+
+
+    //====================================================================
+    public static void VolumeTotalEchangeParInstrumentFinancier () {
+        Map<String, Double> volumeParInstrument =
+                getTransactionList().stream()
+                        .collect(Collectors.groupingBy(t -> t.getAsset(),
+                                Collectors.summingDouble(t -> t.getQuantity())
+                        ));
+
+                      System.out.println("Volume Total Echanger Par Instrument Financier");
+        volumeParInstrument.forEach( (k,v)->{
+            System.out.println("instrument finnanciere "+k + " - " + v.toString());
+        });
     }
 
 
+//============================================================
+    public static void InstrumentPlusEchange() {
 
-    public static void VolumeTotalEchangeParInstrumentFinancier () {
-        Map<Asset, Double> volumeParInstrument =
+        Map<String, Double> volumeParActif =
                 getTransactionList().stream()
                         .collect(Collectors.groupingBy(
                                 t -> t.getAsset(),
                                 Collectors.summingDouble(t -> t.getQuantity())
                         ));
-    }
 
-
-
-    public static void   InstrumentPlusEchange () {
-
-        Asset instrumentPlusEchange =
-                volumeParInstrument.entrySet().stream()
+        String instrumentPlusEchange =
+                volumeParActif.entrySet().stream()
                         .max((e1, e2) -> Double.compare(e1.getValue(), e2.getValue()))
                         .get()
                         .getKey();
 
-
+        System.out.println("Instrument le plus échangé : "
+                + instrumentPlusEchange
+                + " (Volume : " + volumeParActif.get(instrumentPlusEchange) + ")");
     }
 
+//=========================================================
 
     public static void  MontantTotalBUY () {
-        double totalBuy =
-                getTransactionList().stream()
-                        .filter(t -> t.getType().equals("BUY"))
+        double totalBuy = getTransactionList().stream()
+                        .filter(t -> t.getType().equals("achat"))
                         .mapToDouble(t -> (t.getPrice()* t.getQuantity()))
                         .sum();
+        System.out.println("montant total buy :" +totalBuy);
 
     }
 
+//===========================================================
     public static void MontantTotalSELL () {
         double totalSell =
                 getTransactionList().stream()
-                        .filter(t -> t.getType().equals("SELL"))
+                        .filter(t -> t.getType().equals("vent"))
                         .mapToDouble(t -> (t.getPrice()* t.getQuantity()))
                         .sum();
 
+        System.out.println("montant total sell : " + totalSell);
     }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
